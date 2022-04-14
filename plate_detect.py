@@ -18,9 +18,19 @@ def detect_plate(img):
   
     plate_img = img.copy()
     plate_rects = PLATE_CASCADE.detectMultiScale(plate_img,scaleFactor=1.3, minNeighbors=3) 
+        
+    return plate_rects
+
+def blur_plate(img, plate_rects):
+    plate_img = img.copy()
+    roi = img.copy()
     
     for (x,y,w,h) in plate_rects: 
-        cv2.rectangle(plate_img, (x,y), (x+w,y+h), (0,0,255), 4) 
+        
+        roi = roi[y:y+h,x:x+w]
+        blurred_roi = cv2.medianBlur(roi,7)
+        
+        plate_img[y:y+h,x:x+w] = blurred_roi
         
     return plate_img
 
